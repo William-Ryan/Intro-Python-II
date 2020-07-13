@@ -1,4 +1,6 @@
 from room import Room
+from player import Player
+from item import Item
 
 # Declare all the rooms
 
@@ -51,12 +53,13 @@ room['treasure'].s_to = room['narrow']
 #
 # If the user enters "q", quit the game.
 
-class Adventure(Room):
-    def __init__(self, player_name, room_name, room_description):
-        super().__init__(room_name, room_description)
+class Adventure(Room, Player):
+    def __init__(self, player_name, room_name, room_description, room_items):
+        super().__init__(room_name, room_description, room_items, player_name)
         self.p_name = player_name
         self.r_name = room_name
         self.r_desc = room_description
+        self.r_items = room_items
     
     def inputName(self, name):
         if(len(name) < 3 or len(name) > 20):
@@ -67,49 +70,66 @@ class Adventure(Room):
     
     def moveLocation(self, room_name, direction):
             if(direction == "n"):
-                print("You traveled North")
-                Room.changeRoom(self, room_name, direction)
+                    print("You traveled North")
+                    Room.changeRoom(self, room_name, direction)
             elif(direction == "e"):
-                print(f"You traveled East")
-                Room.changeRoom(self, room_name, direction)
-                self.c_room = room_name
+                    print(f"You traveled East")
+                    Room.changeRoom(self, room_name, direction)
+                    self.c_room = room_name
             elif(direction == "s"):
-                print(f"You traveled South")
-                Room.changeRoom(self, room_name, direction)
-                self.c_room = room_name
+                    print(f"You traveled South")
+                    Room.changeRoom(self, room_name, direction)
+                    self.c_room = room_name
             elif(direction == "w" ):
-                print(f"You traveled West")
-                Room.changeRoom(self, room_name, direction)
-                self.c_room = room_name
+                    print(f"You traveled West")
+                    Room.changeRoom(self, room_name, direction)
+                    self.c_room = room_name
             else:
-                print("That doesn't lead anywhere")
+                    print("That doesn't lead anywhere")
 
 user_is_playing = True
-while user_is_playing:
+while user_is_playing == True:
     name = input("Welcome Player! Please input your name here: ") 
     name = str(name)
 
-    player_account = Adventure(name, "outside", "North of you, the cave mount beckons")
+    player_account = Adventure(name, "outside", "North of you, the cave mount beckons", ["Rock"])
 
-    user_is_playing = True
-    while user_is_playing:
+    user_is_playing = False
+
+    checkpoint1 = True
+    while checkpoint1:
         if(player_account.p_name):
             player_account.inputName(player_account.p_name)
-            if(len(name) < 3 or len(name) > 20):
-                pass
-            else:
-                print("---------------------------")
-                print(f"Congratulations {player_account.p_name}! Enjoy the game!")
-                print("---------------------------")
-                print("---------------------------") 
-                print(f"{player_account.p_name} this is Room {player_account.r_name}")
-                print("---------------------------")
-                print(f"Room Description: {player_account.r_desc}")
-                print("---------------------------")
-                location = input("Choose a direction North[n], South[s], East[e], West[w]: ")
-                location = str(location)
-                print("---------------------------")
-                player_account.moveLocation(player_account.r_name, location)
         else:
             print("No name entered. Try again!")
-user_is_playing = True
+        if(len(name) < 3 or len(name) > 20):
+            pass
+        else: 
+                print(f"{player_account.p_name} this is Room {player_account.r_name}")
+                print(f"{player_account.p_name} you have {player_account.p_bag} in your inventory.")
+                print("---------------------------")
+                print(f"Room Description: {player_account.r_desc}")
+                print(f"Room Items: {player_account.r_items}")
+                print("---------------------------")
+                player_command = input("Choose an action Move(m) or Inspect(i): ")
+                player_command = str(player_command)
+                print("---------------------------")
+        if(player_command == "m"):
+            player_direction = input("Choose a direction North(n), South(s), East(e) West(e): ")
+            player_direction = str(player_direction)
+            player_account.moveLocation(player_account.r_name, player_direction)
+        elif(player_command == "i"):
+            print(f"The items in the room are {player_account.r_items}")
+            player_action, item_name = input("Add an item to the inventory by using command Take(t) or Get(g) then the item name or leave with Move(m): ").split()
+            player_action = str(player_action)
+            if(player_action == "t" or player_action == "g"):
+                if(item_name in player_account.r_items):
+                    Player.grabItem(item_name, item_name)
+                    Room.removeItem(self, player_account.r_name, item_name)
+                else:
+                    print("That Item does not exist")
+            else:
+                print("That is not a valid command")
+        else:
+            print("That is not a valid command")
+checkpoint1 = True
