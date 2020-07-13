@@ -106,18 +106,20 @@ while user_is_playing == True:
             Adventure.moveLocation(room_info.r_name, player_direction)
         elif(player_command == "i"):
             print(f"The items in the room are {room_info.r_items}")
-            player_action, item_name = input("Add an item to the inventory by using command Take(t) or Get(g) then the item name or leave with Move(m) now: ").split()
+            player_action, item_name = input("Add an item by using command Take(t)/Get(g), Drop an item Drop(d), or Leave the room with Move(m) room: ").split()
             player_action = str(player_action)
             if(player_action == "t" or player_action == "g"):
                 if(item_name in room_info.r_items):
                     player_account.grabItem(item_name)
                     room_info.removeItem(room_info.r_name, item_name)
-                elif(player_account == "m"):
-                    print(f"The items in the room are {room_info.r_items}")
-                    player_action, item_name = input("Add an item to the inventory by using command Take(t) or Get(g) then the item name or leave with Move(m) now: ").split()
-                    player_action = str(player_action)
                 else:
                     print("That Item does not exist")
+            elif(player_action == "d"):
+                    player_account.bag.remove(f"{item_name}")
+            elif(player_action == "m"):
+                    player_direction = input("Choose a direction North(n), South(s), East(e) West(e): ")
+                    player_direction = str(player_direction)
+                    Adventure.moveLocation(room_info.r_name, player_direction)
             else:
                 print("That is not a valid command")
         else:
