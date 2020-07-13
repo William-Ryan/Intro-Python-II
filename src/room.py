@@ -41,7 +41,5 @@ class Room:
             print("This is a deadend.")
         
     def removeItem(self, room, item_name):
-        if(item_name not in room):
-            print("This item does not exist (At least in this room).")
-        else:
-            self.r_items.remove(item_name)
+            self.r_items.remove(f"{item_name}")
+            
